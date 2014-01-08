@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My conversations" %}{% endblock %}
+
+{% block main %}
+<div class="row" id="conversation">
+    <div class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title">{% trans "My conversations" %}</h1>
+            </div>
+            <ul class="nav nav-pills nav-stacked">
+                {% for conversation in request.user.conversations.all %}
+                    {% if not request.user in conversation.archived_by.all %}
+                        <li id="conversation{{ conversation.pk }}" class="{% if conversation == object %} active{% endif %}{% if not request.user in conversation.read_by.all %} unread{% endif %}">
+                            <a href="{% url "conversation_update" pk=conversation.pk %}">{% for user in object.users.all %}{{ user }} {% endfor %}</a>
+                            <a data-toggle="tooltip" data-placement="right" title="{% trans "Archive" %}" href="{% url "conversation_archive" pk=conversation.pk %}">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            <div class="panel-footer">
+                <a class="btn btn-default btn-xs" href="{% url "conversation_create" %}"><span class="glyphicon glyphicon-plus-sign"></span> {% trans "Create new message" %}</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

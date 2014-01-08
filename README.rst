@@ -48,13 +48,26 @@ Don't forget to migrate your database
 Usage
 -----
 
-...
+If you have executed the tasks written above, the app is ready to work.
+Note: The templates are based on Twitter Bootstrap (http://getbootstrap.com/).
+If you don't use it, simply overwrite them.
+
+In almost every case you want to customize stuff, add jQuery/JavaScript, add
+CSS, your own templates and so on, so this app is kept very simple.
 
 
 Settings
 --------
 
-...
+CONVERSATION_MESSAGE_FORM
++++++++++++++++++++++++++
+
+Default: None
+
+If you want to use your own message form, you can define it here::
+
+    CONVERSATION_MESSAGE_FORM = 'my_app.forms.MyMessageForm'
+
 
 
 Contribute

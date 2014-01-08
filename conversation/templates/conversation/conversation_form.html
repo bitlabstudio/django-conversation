@@ -1,0 +1,35 @@
+{% extends "conversation/conversation_base.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% if object.pk %}{% for user in object.users.all %}{{ user }} {% endfor %}{% else %}{% trans "New conversation" %}{% endif %}
+{% endblock %}
+
+{% block content %}
+<form class="form-inline" method="post" action=".">
+    {% csrf_token %}
+    {% if object.pk %}
+        <h2>{% for user in object.users.all %}{{ user }} {% endfor %}</h2>
+    {% else %}
+        <div class="form-group {% if form.recipients.errors %}has-error{% endif %}">
+            <input class="form-control" type="text" placeholder="{% trans "To:" %}" />
+            {% if form.recipients.errors %}
+                <span class="help-block">{% for error in form.recipients.errors %}{{ error }}<br/> {% endfor %}</span>
+            {% endif %}
+        </div>
+    {% endif %}
+    <ul id="messages" class="list-group">
+        {% for message in object.messages.all %}
+            <li class="list-group-item">
+                <h4>{{ message.user.first_name }}</h4>
+                <small class="pull-right text-muted">{{ message.date|date:"SHORT_DATETIME_FORMAT" }}</small>
+                {{ message.text|linebreaks }}
+            </li>
+        {% endfor %}
+    </ul>
+    {% for field in form %}
+        {% include "django_libs/partials/form_field.html" %}
+    {% endfor %}
+    <input type="submit" class="btn btn-primary" value="{% trans "Post" %}" />
+</form>
+{% endblock %}
