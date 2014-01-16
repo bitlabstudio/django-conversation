@@ -130,7 +130,7 @@
     66 total statements,
     <span class="normal">100.0% covered</span>
   </h1>
-  <p>Generated: Thu 2014-01-16 17:31 CET</p>
+  <p>Generated: Thu 2014-01-16 17:43 CET</p>
   <p>Source file: /home/tobi/Projects/django-conversation/src/conversation/view_mixins.py</p>
   <p>
     Stats:
@@ -173,7 +173,7 @@
 <li class="executed"><code>                raise Http404</code></li>
 <li class="executed"><code>        if kwargs.get('c_type') and kwargs.get('obj_id'):</code></li>
 <li class="executed"><code>            try:</code></li>
-<li class="executed"><code>                content_type = ContentType.objects.get(name=kwargs['c_type'])</code></li>
+<li class="executed"><code>                content_type = ContentType.objects.get(model=kwargs['c_type'])</code></li>
 <li class="executed"><code>            except ContentType.DoesNotExist:</code></li>
 <li class="executed"><code>                raise Http404</code></li>
 <li class="executed"><code>            try:</code></li>

@@ -28,7 +28,7 @@ class ConversationViewMixin(object):
                 raise Http404
         if kwargs.get('c_type') and kwargs.get('obj_id'):
             try:
-                content_type = ContentType.objects.get(name=kwargs['c_type'])
+                content_type = ContentType.objects.get(model=kwargs['c_type'])
             except ContentType.DoesNotExist:
                 raise Http404
             try:
