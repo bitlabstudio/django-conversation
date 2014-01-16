@@ -32,14 +32,16 @@ class MessageForm(forms.ModelForm):
                     Q(pk__in=self.cleaned_data['recipients'])
                     | Q(pk=self.user.pk),
                 )
-                conversations = self.user.conversations.filter(
-                    users__in=recipients)
+                conversations = self.user.conversations.all()
                 if self.content_object:
                     conversations = conversations.filter(
                         content_type=ContentType.objects.get_for_model(
                             self.content_object),
                         object_id=self.content_object.pk,
                     )
+                for user in recipients:
+                    conversations = conversations.filter(
+                        pk__in=user.conversations.values_list('pk'))
                 if conversations:
                     self.conversation = conversations[0]
                 else:

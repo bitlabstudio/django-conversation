@@ -3,6 +3,6 @@
 *coverage/
 db.sqlite
 dist/
-media/
+docs/_build/
+app_media/
 app_static/
-
