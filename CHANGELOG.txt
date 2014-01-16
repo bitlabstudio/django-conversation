@@ -1,5 +1,9 @@
 === (ongoing) ===
 
+=== 1.1.1 ===
+
+- Fixed c_type query in view mixin.
+
 === 1.1 ===
 
 - Added content object to conversations.
