@@ -130,7 +130,7 @@
     66 total statements,
     <span class="normal">100.0% covered</span>
   </h1>
-  <p>Generated: Thu 2014-01-16 17:43 CET</p>
+  <p>Generated: Thu 2014-01-16 17:52 CET</p>
   <p>Source file: /home/tobi/Projects/django-conversation/src/conversation/view_mixins.py</p>
   <p>
     Stats:
@@ -213,7 +213,7 @@
 <li class="executed"><code>        context = super(ConversationViewMixin, self).get_context_data(**kwargs)</code></li>
 <li class="executed"><code>        if hasattr(self, 'initial_user'):</code></li>
 <li class="executed"><code>            context.update({'initial_user': self.initial_user})</code></li>
-<li class="executed"><code>        elif self.object:</code></li>
+<li class="executed"><code>        if self.object:</code></li>
 <li class="executed"><code>            context.update({'content_object': self.object.content_object})</code></li>
 <li class="executed"><code>        elif hasattr(self, 'content_object'):</code></li>
 <li class="executed"><code>            context.update({'content_object': self.content_object})</code></li>

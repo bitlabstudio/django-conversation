@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+- Fixed view context.
+
 === 1.1.1 ===
 
 - Fixed c_type query in view mixin.

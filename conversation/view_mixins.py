@@ -68,7 +68,7 @@ class ConversationViewMixin(object):
         context = super(ConversationViewMixin, self).get_context_data(**kwargs)
         if hasattr(self, 'initial_user'):
             context.update({'initial_user': self.initial_user})
-        elif self.object:
+        if self.object:
             context.update({'content_object': self.object.content_object})
         elif hasattr(self, 'content_object'):
             context.update({'content_object': self.content_object})
