@@ -1,3 +1,7 @@
 === (ongoing) ===
 
-- Add basic app
+- Added content object to conversations.
+
+=== 1.0 ===
+
+- Add basic app.

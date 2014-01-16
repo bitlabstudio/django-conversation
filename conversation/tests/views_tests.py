@@ -1,4 +1,5 @@
 """Tests for the views of the ``conversation`` app."""
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
@@ -43,7 +44,7 @@ class ConversationCreateViewTestCase(ViewTestMixin, TestCase):
             self.is_callable(user=self.user)
 
 
-class ConversationStartCreateViewTestCase(ViewTestMixin, TestCase):
+class ConversationCreateViewInitialTestCase(ViewTestMixin, TestCase):
     """
     Test case for the ConversationCreateView view, if direct messaging a user.
 
@@ -53,15 +54,72 @@ class ConversationStartCreateViewTestCase(ViewTestMixin, TestCase):
         self.stranger = UserFactory()
 
     def get_view_name(self):
-        return 'conversation_start'
+        return 'conversation_create_initial'
 
     def get_view_kwargs(self):
         return {'user_pk': self.stranger.pk}
 
     def test_view(self):
         self.is_not_callable()
+        self.is_not_callable(user=self.user, kwargs={'user_pk': 999})
+        self.is_callable()
+
+
+class ConversationCreateViewContentObjectTestCase(ViewTestMixin, TestCase):
+    """
+    Test case for the ConversationCreateView view, if a content object is
+    attached to the conversation.
+
+    """
+    def setUp(self):
+        self.user = UserFactory()
+        self.content_object = UserFactory()
+
+    def get_view_name(self):
+        return 'conversation_create_content_object'
+
+    def get_view_kwargs(self):
+        return {
+            'c_type': ContentType.objects.get_for_model(self.content_object),
+            'obj_id': self.content_object.pk,
+        }
+
+    def test_view(self):
+        self.is_not_callable()
+        new_kwargs = self.get_view_kwargs()
+        new_kwargs.update({'obj_id': 999})
+        self.is_not_callable(user=self.user, kwargs=new_kwargs)
+        new_kwargs = self.get_view_kwargs()
+        new_kwargs.update({'c_type': 'foobar'})
+        self.is_not_callable(user=self.user, kwargs=new_kwargs)
+        self.is_callable()
+
+
+class ConversationCreateViewInitialContentObjectTestCase(ViewTestMixin,
+                                                         TestCase):
+    """
+    Test case for the ConversationCreateView view, if a content object is
+    attached to the conversation and if an initial user has been chosen.
+
+    """
+    def setUp(self):
+        self.user = UserFactory()
+        self.content_object = UserFactory()
+        self.stranger = UserFactory()
+
+    def get_view_name(self):
+        return 'conversation_create_initial_content_object'
+
+    def get_view_kwargs(self):
+        return {
+            'c_type': ContentType.objects.get_for_model(self.content_object),
+            'obj_id': self.content_object.pk,
+            'user_pk': self.stranger.pk,
+        }
+
+    def test_view(self):
+        self.is_not_callable()
         self.is_callable(user=self.user)
-        self.is_callable(user=self.user, kwargs={'user_pk': 999})
 
 
 class ConversationUpdateViewTestCase(ViewTestMixin, TestCase):

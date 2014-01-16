@@ -2,6 +2,8 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 from django.utils.decorators import method_decorator
@@ -23,7 +25,17 @@ class ConversationViewMixin(object):
             try:
                 self.initial_user = User.objects.get(pk=kwargs['user_pk'])
             except User.DoesNotExist:
-                pass
+                raise Http404
+        if kwargs.get('c_type') and kwargs.get('obj_id'):
+            try:
+                content_type = ContentType.objects.get(name=kwargs['c_type'])
+            except ContentType.DoesNotExist:
+                raise Http404
+            try:
+                self.content_object = content_type.get_object_for_this_type(
+                    pk=kwargs['obj_id'])
+            except ObjectDoesNotExist:
+                raise Http404
         if kwargs.get('pk'):
             # If it's not a CreateView, check the permission
             self.kwargs = kwargs
@@ -47,6 +59,8 @@ class ConversationViewMixin(object):
             'instance': None,
             'initial_user': self.initial_user if hasattr(
                 self, 'initial_user') else None,
+            'content_object': self.content_object if hasattr(
+                self, 'content_object') else None,
         })
         return kwargs
 
@@ -54,6 +68,10 @@ class ConversationViewMixin(object):
         context = super(ConversationViewMixin, self).get_context_data(**kwargs)
         if hasattr(self, 'initial_user'):
             context.update({'initial_user': self.initial_user})
+        elif self.object:
+            context.update({'content_object': self.object.content_object})
+        elif hasattr(self, 'content_object'):
+            context.update({'content_object': self.content_object})
         return context
 
     def get_success_url(self):

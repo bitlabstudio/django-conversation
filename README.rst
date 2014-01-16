@@ -48,6 +48,18 @@ Don't forget to migrate your database
 Usage
 -----
 
+The conversations in this app are threaded, that means a conversation is
+related to one object. In this case the object is a user. So if ``user1``
+starts a conversation with ``user2`` all messages between those users are
+stored in one conversation (you know it, if your are e.g. a Facebook user).
+
+This app allows another relation, so you can also add a content object to a
+conversation between two users. Let's say you built a sports app. ``user1``
+wants to talk with ``user2`` about a fight called ``Klitschko vs. Tyson``. They
+can now start a conversation, which is also related to that fight. But, they
+can also start a new conversation about other fights or talk to each other
+without another relation, for sure.
+
 If you have executed the tasks written above, the app is ready to work.
 Note: The templates are based on Twitter Bootstrap (http://getbootstrap.com/).
 If you don't use it, simply overwrite them.

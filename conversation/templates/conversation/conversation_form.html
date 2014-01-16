@@ -8,6 +8,9 @@
 {% block content %}
 <form class="form-inline" method="post" action=".">
     {% csrf_token %}
+    {% if content_object %}
+        <h3>{{ content_object }}</h3>
+    {% endif %}
     {% if object.pk %}
         <h2>{% for user in object.users.all %}{{ user }} {% endfor %}</h2>
     {% else %}
@@ -28,7 +31,7 @@
         {% endfor %}
     </ul>
     {% for field in form %}
-        {% include "django_libs/partials/form_field.html" %}
+        {{ field }}
     {% endfor %}
     <input type="submit" class="btn btn-primary" value="{% trans "Post" %}" />
 </form>
