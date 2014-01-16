@@ -1,0 +1,8 @@
+*.egg-info/
+*.pyc
+*coverage/
+db.sqlite
+dist/
+media/
+app_static/
+
