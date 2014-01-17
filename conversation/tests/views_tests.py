@@ -21,6 +21,7 @@ class ConversationRedirectViewTestCase(ViewTestMixin, TestCase):
         self.is_not_callable()
         self.is_callable(user=self.user,
                          and_redirects_to=reverse('conversation_create'))
+        self.is_callable(ajax=True)
         conversation = ConversationFactory()
         conversation.users.add(self.user)
         self.is_callable(and_redirects_to=reverse(
@@ -39,6 +40,7 @@ class ConversationCreateViewTestCase(ViewTestMixin, TestCase):
     def test_view(self):
         self.is_not_callable()
         self.is_callable(user=self.user)
+        self.is_callable(ajax=True)
         with self.settings(
                 CONVERSATION_MESSAGE_FORM='conversation.forms.MessageForm'):
             self.is_callable(user=self.user)
@@ -63,6 +65,7 @@ class ConversationCreateViewInitialTestCase(ViewTestMixin, TestCase):
         self.is_not_callable()
         self.is_not_callable(user=self.user, kwargs={'user_pk': 999})
         self.is_callable()
+        self.is_callable(ajax=True)
 
 
 class ConversationCreateViewContentObjectTestCase(ViewTestMixin, TestCase):
@@ -93,6 +96,7 @@ class ConversationCreateViewContentObjectTestCase(ViewTestMixin, TestCase):
         new_kwargs.update({'c_type': 'foobar'})
         self.is_not_callable(user=self.user, kwargs=new_kwargs)
         self.is_callable()
+        self.is_callable(ajax=True)
 
 
 class ConversationCreateViewInitialContentObjectTestCase(ViewTestMixin,
@@ -120,6 +124,7 @@ class ConversationCreateViewInitialContentObjectTestCase(ViewTestMixin,
     def test_view(self):
         self.is_not_callable()
         self.is_callable(user=self.user)
+        self.is_callable(ajax=True)
 
 
 class ConversationUpdateViewTestCase(ViewTestMixin, TestCase):
@@ -141,6 +146,7 @@ class ConversationUpdateViewTestCase(ViewTestMixin, TestCase):
         self.is_not_callable(user=self.stranger)
         self.is_callable(user=self.user)
         self.is_callable(data={'text': 'Foobar'}, method='post')
+        self.is_callable(ajax=True)
 
 
 class ConversationArchiveViewTestCase(ViewTestMixin, TestCase):

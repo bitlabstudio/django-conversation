@@ -9,12 +9,13 @@ from django.http import Http404, HttpResponse
 from django.utils.decorators import method_decorator
 
 from django_libs.loaders import load_member
+from django_libs.views_mixins import AjaxResponseMixin
 
 from .forms import MessageForm
 from .models import Conversation
 
 
-class ConversationViewMixin(object):
+class ConversationViewMixin(AjaxResponseMixin):
     """Mixin for conversation related views."""
     model = Conversation
 
