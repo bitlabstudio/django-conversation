@@ -1,7 +1,7 @@
 """Forms for the ``conversation`` app."""
 from django import forms
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db.models import Q
 
 from .models import Conversation, Message
@@ -16,7 +16,7 @@ class MessageForm(forms.ModelForm):
         self.content_object = content_object
         super(MessageForm, self).__init__(*args, **kwargs)
         if not self.conversation:
-            users = User.objects.exclude(pk=user.pk)
+            users = get_user_model().objects.exclude(pk=user.pk)
             self.fields['recipients'] = forms.MultipleChoiceField(
                 choices=[(u.pk, u) for u in users],
                 initial=([initial_user.pk] if initial_user else ''),
@@ -28,7 +28,7 @@ class MessageForm(forms.ModelForm):
             self.instance.user = self.user
             if not self.conversation:
                 # Check for existing conversations of these users
-                recipients = User.objects.filter(
+                recipients = get_user_model().objects.filter(
                     Q(pk__in=self.cleaned_data['recipients'])
                     | Q(pk=self.user.pk),
                 )

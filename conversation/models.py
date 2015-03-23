@@ -2,6 +2,7 @@
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -16,19 +17,19 @@ class Conversation(models.Model):
 
     """
     users = models.ManyToManyField(
-        'auth.User',
+        settings.AUTH_USER_MODEL,
         verbose_name=_('Users'),
         related_name='conversations',
     )
 
     archived_by = models.ManyToManyField(
-        'auth.User',
+        settings.AUTH_USER_MODEL,
         verbose_name=_('Archived by'),
         related_name='archived_conversations',
     )
 
     read_by = models.ManyToManyField(
-        'auth.User',
+        settings.AUTH_USER_MODEL,
         verbose_name=_('Read by'),
         related_name='read_conversations',
     )
@@ -54,7 +55,7 @@ class Message(models.Model):
 
     """
     user = models.ForeignKey(
-        'auth.User',
+        settings.AUTH_USER_MODEL,
         verbose_name=_('User'),
         related_name='messages',
     )
