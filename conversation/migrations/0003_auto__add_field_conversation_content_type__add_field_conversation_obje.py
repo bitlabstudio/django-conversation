@@ -5,6 +5,7 @@ from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+from compat import USER_MODEL
 
 class Migration(SchemaMigration):
 
