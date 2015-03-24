@@ -67,12 +67,12 @@ class Migration(SchemaMigration):
         },
         u'conversation.conversation': {
             'Meta': {'object_name': 'Conversation'},
-            'archived_by': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'archived_conversations'", 'symmetrical': 'False', 'to': u"orm['auth.User']"}),
+            'archived_by': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'archived_conversations'", 'symmetrical': 'False', 'to': u"orm['%s']" % USER_MODEL['orm_label']}),
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'conversation_content_objects'", 'null': 'True', 'to': u"orm['contenttypes.ContentType']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'object_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'read_by': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'read_conversations'", 'symmetrical': 'False', 'to': u"orm['auth.User']"}),
-            'users': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'conversations'", 'symmetrical': 'False', 'to': u"orm['auth.User']"})
+            'read_by': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'read_conversations'", 'symmetrical': 'False', 'to': u"orm['%s']" % USER_MODEL['orm_label']}),
+            'users': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'conversations'", 'symmetrical': 'False', 'to': u"orm['%s']" % USER_MODEL['orm_label']})
         },
         u'conversation.message': {
             'Meta': {'object_name': 'Message'},
@@ -80,7 +80,7 @@ class Migration(SchemaMigration):
             'date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'text': ('django.db.models.fields.TextField', [], {'max_length': '2048'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'messages'", 'to': u"orm['auth.User']"})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'messages'", 'to': u"orm['%s']" % USER_MODEL['orm_label']})
         }
     }
 
