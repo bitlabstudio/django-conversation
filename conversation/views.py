@@ -72,7 +72,7 @@ class ConversationCreateView(ConversationViewMixin, CreateView):
             raise Http404
         # Check for an existing conversation of these users
         conversations = self.user.conversations.filter(
-            users__in=[self.user, self.initial_user])
+            pk__in=self.initial_user.conversations.values_list('pk'))
         if conversations:
             return HttpResponseRedirect(reverse(
                 'conversation_update', kwargs={'pk': conversations[0]}))
