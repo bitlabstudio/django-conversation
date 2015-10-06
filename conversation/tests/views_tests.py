@@ -3,83 +3,78 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from django_libs.tests.factories import UserFactory
-from django_libs.tests.views_tests import ViewTestMixin
+from django_libs.tests.views_tests import ViewRequestFactoryTestMixin
+from mixer.backend.django import mixer
 
-from .factories import ConversationFactory
+from .. import views
 
 
-class ConversationRedirectViewTestCase(ViewTestMixin, TestCase):
+class ConversationRedirectViewTestCase(ViewRequestFactoryTestMixin, TestCase):
     """Test case for the ConversationRedirectView view."""
-    def setUp(self):
-        self.user = UserFactory()
+    view_class = views.ConversationRedirectView
 
-    def get_view_name(self):
-        return 'conversation_list'
+    def setUp(self):
+        self.user = mixer.blend('auth.User')
 
     def test_view(self):
-        self.is_not_callable()
-        self.is_callable(user=self.user,
-                         and_redirects_to=reverse('conversation_create'))
-        self.is_callable(ajax=True)
-        conversation = ConversationFactory()
+        self.should_redirect_to_login_when_anonymous()
+        self.redirects(user=self.user, to=reverse('conversation_create'))
+        conversation = mixer.blend('conversation.Conversation')
         conversation.users.add(self.user)
-        self.is_callable(and_redirects_to=reverse(
-            'conversation_update', kwargs={'pk': conversation.pk}))
+        self.redirects(user=self.user, to_url_name='conversation_update')
 
 
-class ConversationCreateViewTestCase(ViewTestMixin, TestCase):
+class ConversationCreateViewTestCase(ViewRequestFactoryTestMixin, TestCase):
     """Test case for the ConversationCreateView view."""
-    def setUp(self):
-        self.user = UserFactory()
-        self.stranger = UserFactory()
+    view_class = views.ConversationCreateView
 
-    def get_view_name(self):
-        return 'conversation_create'
+    def setUp(self):
+        self.user = mixer.blend('auth.User')
+        self.stranger = mixer.blend('auth.User')
 
     def test_view(self):
-        self.is_not_callable()
+        self.should_redirect_to_login_when_anonymous()
         self.is_callable(user=self.user)
-        self.is_callable(ajax=True)
+        self.is_callable(user=self.user, ajax=True)
         with self.settings(
                 CONVERSATION_MESSAGE_FORM='conversation.forms.MessageForm'):
             self.is_callable(user=self.user)
 
 
-class ConversationCreateViewInitialTestCase(ViewTestMixin, TestCase):
+class ConversationCreateViewInitialTestCase(
+        ViewRequestFactoryTestMixin, TestCase):
     """
     Test case for the ConversationCreateView view, if direct messaging a user.
 
     """
-    def setUp(self):
-        self.user = UserFactory()
-        self.stranger = UserFactory()
+    view_class = views.ConversationCreateView
 
-    def get_view_name(self):
-        return 'conversation_create_initial'
+    def setUp(self):
+        self.user = mixer.blend('auth.User')
+        self.stranger = mixer.blend('auth.User')
 
     def get_view_kwargs(self):
         return {'user_pk': self.stranger.pk}
 
     def test_view(self):
-        self.is_not_callable()
+        self.should_redirect_to_login_when_anonymous()
         self.is_not_callable(user=self.user, kwargs={'user_pk': 999})
-        self.is_callable()
-        self.is_callable(ajax=True)
+        self.is_callable(user=self.user)
+        self.is_callable(user=self.user, ajax=True)
 
 
-class ConversationCreateViewContentObjectTestCase(ViewTestMixin, TestCase):
+class ConversationCreateViewContentObjectTestCase(
+        ViewRequestFactoryTestMixin, TestCase):
     """
     Test case for the ConversationCreateView view, if a content object is
     attached to the conversation.
 
     """
-    def setUp(self):
-        self.user = UserFactory()
-        self.content_object = UserFactory()
+    view_class = views.ConversationCreateView
 
-    def get_view_name(self):
-        return 'conversation_create_content_object'
+    def setUp(self):
+        self.user = mixer.blend('auth.User')
+        self.content_object = mixer.blend('auth.User')
 
     def get_view_kwargs(self):
         return {
@@ -88,31 +83,30 @@ class ConversationCreateViewContentObjectTestCase(ViewTestMixin, TestCase):
         }
 
     def test_view(self):
-        self.is_not_callable()
+        self.should_redirect_to_login_when_anonymous()
         new_kwargs = self.get_view_kwargs()
         new_kwargs.update({'obj_id': 999})
         self.is_not_callable(user=self.user, kwargs=new_kwargs)
         new_kwargs = self.get_view_kwargs()
         new_kwargs.update({'c_type': 'foobar'})
         self.is_not_callable(user=self.user, kwargs=new_kwargs)
-        self.is_callable()
-        self.is_callable(ajax=True)
+        self.is_callable(user=self.user)
+        self.is_callable(user=self.user, ajax=True)
 
 
-class ConversationCreateViewInitialContentObjectTestCase(ViewTestMixin,
-                                                         TestCase):
+class ConversationCreateViewInitialContentObjectTestCase(
+        ViewRequestFactoryTestMixin, TestCase):
     """
     Test case for the ConversationCreateView view, if a content object is
     attached to the conversation and if an initial user has been chosen.
 
     """
-    def setUp(self):
-        self.user = UserFactory()
-        self.content_object = UserFactory()
-        self.stranger = UserFactory()
+    view_class = views.ConversationCreateView
 
-    def get_view_name(self):
-        return 'conversation_create_initial_content_object'
+    def setUp(self):
+        self.user = mixer.blend('auth.User')
+        self.content_object = mixer.blend('auth.User')
+        self.stranger = mixer.blend('auth.User')
 
     def get_view_kwargs(self):
         return {
@@ -122,53 +116,52 @@ class ConversationCreateViewInitialContentObjectTestCase(ViewTestMixin,
         }
 
     def test_view(self):
-        self.is_not_callable()
+        self.should_redirect_to_login_when_anonymous()
         self.is_callable(user=self.user)
-        self.is_callable(ajax=True)
+        self.is_callable(user=self.user, ajax=True)
 
 
-class ConversationUpdateViewTestCase(ViewTestMixin, TestCase):
+class ConversationUpdateViewTestCase(ViewRequestFactoryTestMixin, TestCase):
     """Test case for the ConversationUpdateView view."""
-    def setUp(self):
-        self.user = UserFactory()
-        self.conversation = ConversationFactory()
-        self.conversation.users.add(self.user)
-        self.stranger = UserFactory()
+    view_class = views.ConversationUpdateView
 
-    def get_view_name(self):
-        return 'conversation_update'
+    def setUp(self):
+        self.user = mixer.blend('auth.User')
+        self.conversation = mixer.blend('conversation.Conversation')
+        self.conversation.users.add(self.user)
+        self.stranger = mixer.blend('auth.User')
 
     def get_view_kwargs(self):
         return {'pk': self.conversation.pk}
 
     def test_view(self):
-        self.is_not_callable()
+        self.should_redirect_to_login_when_anonymous()
         self.is_not_callable(user=self.stranger)
         self.is_callable(user=self.user)
-        self.is_callable(data={'text': 'Foobar'}, method='post')
-        self.is_callable(ajax=True)
+        self.is_postable(user=self.user, data={'text': 'Foobar'},
+                         to_url_name='conversation_update')
+        self.is_callable(user=self.user, ajax=True)
 
 
-class ConversationArchiveViewTestCase(ViewTestMixin, TestCase):
+class ConversationArchiveViewTestCase(ViewRequestFactoryTestMixin, TestCase):
     """Test case for the ConversationArchiveView view."""
-    def setUp(self):
-        self.user = UserFactory()
-        self.conversation = ConversationFactory()
-        self.conversation.users.add(self.user)
-        self.other_conversation = ConversationFactory()
+    view_class = views.ConversationArchiveView
 
-    def get_view_name(self):
-        return 'conversation_archive'
+    def setUp(self):
+        self.user = mixer.blend('auth.User')
+        self.conversation = mixer.blend('conversation.Conversation')
+        self.conversation.users.add(self.user)
+        self.other_conversation = mixer.blend('conversation.Conversation')
 
     def get_view_kwargs(self):
         return {'pk': self.conversation.pk}
 
     def test_view(self):
-        self.is_not_callable()
+        self.should_redirect_to_login_when_anonymous()
         self.is_not_callable(user=self.user)
         self.is_not_callable(kwargs={'pk': self.other_conversation.pk},
-                             method='post', ajax=True)
-        self.is_callable(method='post', ajax=True)
+                             user=self.user,ajax=True, post=True)
+        self.is_postable(user=self.user, ajax=True)
         self.assertIn(
             self.user, self.conversation.archived_by.all(),
             msg=('The conversation should have been marked as archived.'))

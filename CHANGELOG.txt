@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+- Preparing app for Django>=1.7
+
 === 1.2 ===
 
 - Added ajax mixin to perform with extra ajax templates.

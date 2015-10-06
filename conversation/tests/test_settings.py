@@ -2,7 +2,7 @@
 import os
 
 DEBUG = True
-
+USE_TZ = True
 SITE_ID = 1
 
 APP_ROOT = os.path.abspath(
@@ -15,6 +15,17 @@ DATABASES = {
         'NAME': ':memory:',
     }
 }
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
 
 ROOT_URLCONF = 'conversation.tests.urls'
 
@@ -55,15 +66,14 @@ INTERNAL_APPS = [
 ]
 
 INSTALLED_APPS = EXTERNAL_APPS + INTERNAL_APPS
-COVERAGE_MODULE_EXCLUDES += EXTERNAL_APPS
+COVERAGE_MODULE_EXCLUDES = EXTERNAL_APPS + [
+    '__init__$', 'tests$', 'settings$', 'urls$', 'locale$',
+    'migrations', 'fixtures', 'admin$', 'django_extensions',
+]
 
 SECRET_KEY = 'foobar'
 
-MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+FROM_EMAIL = "info@example.com"
+DEFAULT_FROM_EMAIL = FROM_EMAIL
+SERVER_EMAIL = FROM_EMAIL
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

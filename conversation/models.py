@@ -43,6 +43,14 @@ class Conversation(models.Model):
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
+    class Meta:
+        ordering = ('-pk', )
+        verbose_name = _('Conversation')
+        verbose_name_plural = _('Conversations')
+
+    def __str__(self):
+        return '{}'.format(self.pk)
+
 
 class Message(models.Model):
     """
@@ -75,3 +83,11 @@ class Message(models.Model):
         max_length=2048,
         verbose_name=_('Text'),
     )
+
+    class Meta:
+        ordering = ('-date', )
+        verbose_name = _('Message')
+        verbose_name_plural = _('Messages')
+
+    def __str__(self):
+        return self.user.email

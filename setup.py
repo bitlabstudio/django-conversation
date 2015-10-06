@@ -52,7 +52,20 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'Django',
+        'Django<=1.7.8',
         'django-libs',
     ],
+    tests_require=[
+        'django-nose',
+        'coverage<=3.7.1',
+        'django-coverage',
+        'ipdb',
+        'flake8',
+        'fabric',
+        'mixer',
+        'mock',
+        'Pillow',
+        'django-libs',
+    ],
+    test_suite='conversation.tests.runtests.runtests',
 )

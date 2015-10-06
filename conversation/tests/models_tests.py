@@ -1,7 +1,7 @@
 """Tests for the models of the ``conversation`` app."""
 from django.test import TestCase
 
-from .factories import ConversationFactory, MessageFactory
+from mixer.backend.django import mixer
 
 
 class ConversationTestCase(TestCase):
@@ -9,10 +9,10 @@ class ConversationTestCase(TestCase):
     longMessage = True
 
     def setUp(self):
-        self.conversation = ConversationFactory()
+        self.conversation = mixer.blend('conversation.Conversation')
 
     def test_model(self):
-        self.assertTrue(self.conversation.pk, msg=(
+        self.assertTrue(str(self.conversation), msg=(
             'Should be able to instantiate and save the object.'))
 
 
@@ -21,8 +21,8 @@ class MessageTestCase(TestCase):
     longMessage = True
 
     def setUp(self):
-        self.message = MessageFactory()
+        self.message = mixer.blend('conversation.Message')
 
     def test_model(self):
-        self.assertTrue(self.message.pk, msg=(
+        self.assertTrue(str(self.message), msg=(
             'Should be able to instantiate and save the object.'))

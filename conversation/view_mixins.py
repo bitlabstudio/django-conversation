@@ -41,7 +41,7 @@ class ConversationViewMixin(AjaxResponseMixin):
             # If it's not a CreateView, check the permission
             self.kwargs = kwargs
             self.object = self.get_object()
-            if not request.user in self.object.users.all():
+            if request.user not in self.object.users.all():
                 raise Http404
         return super(ConversationViewMixin, self).dispatch(
             request, *args, **kwargs)
@@ -92,7 +92,7 @@ class ConversationStatusViewMixin(object):
         if request.method == 'POST' and request.is_ajax():
             self.kwargs = kwargs
             self.object = self.get_object()
-            if not request.user in self.object.users.all():
+            if request.user not in self.object.users.all():
                 raise Http404
             if self.action == 'archive':
                 self.object.archived_by.add(request.user)

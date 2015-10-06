@@ -1,7 +1,7 @@
 """Tests for the forms of the ``conversation`` app."""
 from django.test import TestCase
 
-from django_libs.tests.factories import UserFactory
+from mixer.backend.django import mixer
 
 from .. import forms
 from ..models import Conversation
@@ -12,9 +12,9 @@ class MessageFormTestCase(TestCase):
     longMessage = True
 
     def setUp(self):
-        self.user = UserFactory()
-        self.other_user = UserFactory()
-        self.content_object = UserFactory()
+        self.user = mixer.blend('auth.User')
+        self.other_user = mixer.blend('auth.User')
+        self.content_object = mixer.blend('auth.User')
 
     def test_form(self):
         data = {'text': 'Foo'}
