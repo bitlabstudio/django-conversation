@@ -1,7 +1,7 @@
 """Views for the ``conversation`` app."""
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.utils.decorators import method_decorator
@@ -66,8 +66,9 @@ class ConversationCreateView(ConversationViewMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         self.user = request.user
         try:
-            self.initial_user = User.objects.get(pk=kwargs['user_pk'])
-        except User.DoesNotExist:
+            self.initial_user = get_user_model().objects.get(
+                pk=kwargs['user_pk'])
+        except get_user_model().DoesNotExist:
             raise Http404
         # Check for an existing conversation of these users
         conversations = self.user.conversations.filter(
