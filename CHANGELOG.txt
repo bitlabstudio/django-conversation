@@ -1,6 +1,7 @@
 === (ongoing) ===
 
 - Preparing app for Django>=1.7
+- added new migrations
 
 === 1.2 ===
 
