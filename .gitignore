@@ -4,3 +4,4 @@
 db.sqlite
 dist/
 .coverage
+*app_media/
