@@ -1,33 +1,32 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n conversation_tags %}
 
-{% block title %}{% trans "My conversations" %}{% endblock %}
+{% block head_title %}{% trans "My conversations" %}{% endblock %}
 
 {% block main %}
-<div class="row" id="conversation">
-    <div class="col-md-3">
+<div class="row">
+    <div class="col-sm-4">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h1 class="panel-title">{% trans "My conversations" %}</h1>
+                <h4 class="panel-title">{% trans "My conversations" %}</h4>
             </div>
-            <ul class="nav nav-pills nav-stacked">
-                {% for conversation in request.user.conversations.all %}
-                    {% if not request.user in conversation.archived_by.all %}
-                        <li id="conversation{{ conversation.pk }}" class="{% if conversation == object %} active{% endif %}{% if not request.user in conversation.read_by.all %} unread{% endif %}">
-                            <a href="{% url "conversation_update" pk=conversation.pk %}">{% for user in object.users.all %}{{ user }} {% endfor %}</a>
-                            <a data-toggle="tooltip" data-placement="right" title="{% trans "Archive" %}" href="{% url "conversation_archive" pk=conversation.pk %}">
-                                <span class="glyphicon glyphicon-remove"></span>
+            {% if request.user.conversations.all %}
+                <div class="list-group">
+                    {% for conversation in request.user.conversations.all %}
+                        {% if not request.user in conversation.archived_by.all %}
+                            <a class="list-group-item conversation-link{% if conversation == object %} active{% endif %}{% if not request.user in conversation.read_by.all %} unread{% endif %}" href="{% url "conversation_update" pk=conversation.pk %}">
+                                {% chain_user_names conversation.users.all request.user as user_names %}{{ user_names }}
                             </a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-            <div class="panel-footer">
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="panel-body">
                 <a class="btn btn-default btn-xs" href="{% url "conversation_create" %}"><span class="glyphicon glyphicon-plus-sign"></span> {% trans "Create new message" %}</a>
             </div>
         </div>
     </div>
-    <div class="col-md-9">
+    <div class="col-md-8">
         {% block content %}{% endblock %}
     </div>
 </div>

@@ -1,4 +1,6 @@
 """Models for the conversation app."""
+import os
+
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -26,12 +28,14 @@ class Conversation(models.Model):
         settings.AUTH_USER_MODEL,
         verbose_name=_('Archived by'),
         related_name='archived_conversations',
+        blank=True, null=True,
     )
 
     read_by = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         verbose_name=_('Read by'),
         related_name='read_conversations',
+        blank=True, null=True,
     )
 
     # Generic FK to the object this conversation is about
@@ -84,10 +88,19 @@ class Message(models.Model):
         verbose_name=_('Text'),
     )
 
+    attachment = models.FileField(
+        upload_to='conversation_messages',
+        verbose_name=_('Attachment'),
+        blank=True, null=True,
+    )
+
     class Meta:
-        ordering = ('-date', )
+        ordering = ('pk', )
         verbose_name = _('Message')
         verbose_name_plural = _('Messages')
 
     def __str__(self):
         return self.user.email
+
+    def filename(self):
+        return os.path.basename(self.attachment.name)

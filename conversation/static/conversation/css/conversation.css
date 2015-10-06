@@ -1,0 +1,9 @@
+#conversation-messages {
+  min-height: 200px;
+  background: #eeeeee;
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+.conversation-link.unread {
+  background: #eeeeee;
+}

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
 
 from django_libs.loaders import load_member
@@ -89,12 +89,12 @@ class ConversationStatusViewMixin(object):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if request.method == 'POST' and request.is_ajax():
+        if request.method == 'POST':
             self.kwargs = kwargs
             self.object = self.get_object()
             if request.user not in self.object.users.all():
                 raise Http404
             if self.action == 'archive':
                 self.object.archived_by.add(request.user)
-                return HttpResponse('archived')
+                return HttpResponseRedirect(reverse('conversation_list'))
         raise Http404

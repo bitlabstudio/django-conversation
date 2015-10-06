@@ -1,38 +1,40 @@
 {% extends "conversation/conversation_base.html" %}
-{% load i18n %}
+{% load i18n conversation_tags %}
 
-{% block title %}
-    {% if object.pk %}{% for user in object.users.all %}{{ user }} {% endfor %}{% else %}{% trans "New conversation" %}{% endif %}
+{% block head_title %}
+    {% chain_user_names object.users.all request.user as user_names %}
+    {% if object.pk %}{{ user_names }}{% else %}{% trans "New conversation" %}{% endif %}
 {% endblock %}
 
 {% block content %}
-<form class="form-inline" method="post" action=".">
-    {% csrf_token %}
-    {% if content_object %}
-        <h3>{{ content_object }}</h3>
+{% if object.pk %}
+    {% chain_user_names object.users.all request.user 200 as user_names %}
+    {% if not request.user in conversation.archived_by.all %}
+        <form class="pull-right" method="post" action="{% url "conversation_archive" pk=conversation.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button>
+        </form>
     {% endif %}
-    {% if object.pk %}
-        <h2>{% for user in object.users.all %}{{ user }} {% endfor %}</h2>
-    {% else %}
-        <div class="form-group {% if form.recipients.errors %}has-error{% endif %}">
-            <input class="form-control" type="text" placeholder="{% trans "To:" %}" />
-            {% if form.recipients.errors %}
-                <span class="help-block">{% for error in form.recipients.errors %}{{ error }}<br/> {% endfor %}</span>
+    <h3 style="margin-top: 0px;">{{ user_names }}</h3>
+{% endif %}
+<ul id="conversation-messages" class="list-group">
+    {% for message in object.messages.all %}
+        <li class="list-group-item">
+            <strong>{{ message.user }}</strong>
+            <small class="pull-right text-muted">{{ message.date|date:"SHORT_DATETIME_FORMAT" }}</small>
+            <div class="clearfix"></div>
+            {{ message.text|linebreaks }}
+            {% if message.attachment %}
+                <a href="{{ message.attachment.url }}" target="_blank"><span class="glyphicon glyphicon-file"></span> {{ message.filename }}</a>
             {% endif %}
-        </div>
-    {% endif %}
-    <ul id="messages" class="list-group">
-        {% for message in object.messages.all %}
-            <li class="list-group-item">
-                <h4>{{ message.user.first_name }}</h4>
-                <small class="pull-right text-muted">{{ message.date|date:"SHORT_DATETIME_FORMAT" }}</small>
-                {{ message.text|linebreaks }}
-            </li>
-        {% endfor %}
-    </ul>
-    {% for field in form %}
-        {{ field }}
+        </li>
     {% endfor %}
-    <input type="submit" class="btn btn-primary" value="{% trans "Post" %}" />
+</ul>
+<form method="post" action="." enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in form %}
+        {% include "django_libs/partials/form_field.html" with hide_label=1 %}
+    {% endfor %}
+    <input type="submit" class="btn btn-primary" value="{% trans "Send" %}" />
 </form>
 {% endblock %}

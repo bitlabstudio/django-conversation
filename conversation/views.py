@@ -31,9 +31,11 @@ class ConversationRedirectView(view_mixins.ConversationViewMixin,
     permanent = False
 
     def get_redirect_url(self, **kwargs):
-        if self.user.conversations.all():
+        active_conversations = self.user.conversations.exclude(
+            archived_by__in=[self.request.user])
+        if active_conversations:
             return reverse('conversation_update', kwargs={
-                'pk': self.user.conversations.all()[0].pk})
+                'pk': active_conversations[0].pk})
         return reverse('conversation_create')
 
 

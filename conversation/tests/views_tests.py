@@ -160,7 +160,7 @@ class ConversationArchiveViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         self.should_redirect_to_login_when_anonymous()
         self.is_not_callable(user=self.user)
         self.is_not_callable(kwargs={'pk': self.other_conversation.pk},
-                             user=self.user,ajax=True, post=True)
+                             user=self.user, ajax=True, post=True)
         self.is_postable(user=self.user, ajax=True)
         self.assertIn(
             self.user, self.conversation.archived_by.all(),
