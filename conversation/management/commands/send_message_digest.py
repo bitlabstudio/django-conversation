@@ -18,7 +18,7 @@ class Command(NoArgsCommand):
             unread_by__isnull=False,
             read_by_all__lt=now() - timedelta(days=1))
         users = get_user_model().objects.filter(
-            pk__in=unread_conversations.values_list('pk')).distinct()
+            pk__in=unread_conversations.values_list('unread_by')).distinct()
         for user in users:
             send_email(
                 None,
