@@ -5,7 +5,7 @@ import models
 
 
 class ConversationAdmin(admin.ModelAdmin):
-    list_display = ('user_emails', )
+    list_display = ('user_emails', 'read_by_all')
 
     def user_emails(self, obj):
         return ', '.join([str(u.email) for u in obj.users.all()])

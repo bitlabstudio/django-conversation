@@ -22,8 +22,9 @@ class MessageForm(forms.ModelForm):
 
             # Reset archive marks
             self.instance.conversation.archived_by.clear()
-            # Reset reading status
-            self.instance.conversation.read_by.clear()
+            # Mark as unread
+            self.instance.conversation.unread_by.add(
+                *self.instance.conversation.users.exclude(pk=self.user.pk))
         return super(MessageForm, self).save(*args, **kwargs).conversation
 
     class Meta:

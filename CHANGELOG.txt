@@ -1,5 +1,8 @@
 === (ongoing) ===
 
+- Added digest management command
+- Refactored behaviour to mark conversations as unread
+
 === 1.3.3 ===
 
 - fixed redirect for already existing conversations

@@ -12,7 +12,7 @@ class Conversation(models.Model):
 
     :users: Users participating in this conversation.
     :archived_by: List of participants, who archived this conversation.
-    :read_by: List of participants, who read this conversation.
+    :unread_by: List of participants, who haven't read this conversation.
 
     """
     users = models.ManyToManyField(
@@ -28,11 +28,16 @@ class Conversation(models.Model):
         blank=True, null=True,
     )
 
-    read_by = models.ManyToManyField(
+    unread_by = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        verbose_name=_('Read by'),
-        related_name='read_conversations',
+        verbose_name=_('Unread by'),
+        related_name='unread_conversations',
         blank=True, null=True,
+    )
+
+    read_by_all = models.DateTimeField(
+        verbose_name=_('Read by all'),
+        auto_now_add=True,
     )
 
     class Meta:
@@ -42,6 +47,12 @@ class Conversation(models.Model):
 
     def __str__(self):
         return '{}'.format(self.pk)
+
+    def get_last_message(self):
+        try:
+            return self.messages.order_by('-date')[0]
+        except IndexError:
+            return None
 
 
 class Message(models.Model):
@@ -83,7 +94,7 @@ class Message(models.Model):
     )
 
     class Meta:
-        ordering = ('pk', )
+        ordering = ('date', )
         verbose_name = _('Message')
         verbose_name_plural = _('Messages')
 

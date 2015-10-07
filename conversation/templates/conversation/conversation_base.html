@@ -14,7 +14,7 @@
                 <div class="list-group">
                     {% for conversation in request.user.conversations.all %}
                         {% if not request.user in conversation.archived_by.all %}
-                            <a class="list-group-item conversation-link{% if conversation == object %} active{% endif %}{% if not request.user in conversation.read_by.all %} unread{% endif %}" href="{% url "conversation_update" pk=conversation.pk %}">
+                            <a class="list-group-item conversation-link{% if conversation == object %} active{% endif %}{% if request.user in conversation.unread_by.all %} unread{% endif %}" href="{% url "conversation_update" pk=conversation.pk %}">
                                 {% chain_user_names conversation.users.all request.user as user_names %}{{ user_names }}
                             </a>
                         {% endif %}

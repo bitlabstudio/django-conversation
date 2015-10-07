@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.utils.decorators import method_decorator
+from django.utils.timezone import now
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -55,7 +56,11 @@ class ConversationUpdateView(ConversationViewMixin, UpdateView):
         if self.user not in self.object.users.all():
             raise Http404
         # Mark as read
-        self.object.read_by.add(self.user)
+        self.object.unread_by.remove(self.user)
+        # If conversation has been read by all participants
+        if self.object.unread_by.count() == 0:
+            self.object.read_by_all = now()
+            self.object.save()
         return super(ConversationUpdateView, self).dispatch(
             request, *args, **kwargs)
 
