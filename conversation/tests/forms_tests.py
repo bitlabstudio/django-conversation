@@ -29,3 +29,18 @@ class MessageFormTestCase(TestCase):
         form.save()
         self.assertEqual(Conversation.objects.count(), 1, msg=(
             'The existing conversation should\'ve been re-used.'))
+
+        blocked_user = mixer.blend('conversation.BlockedUser',
+                                   blocked_by=self.user, user=self.other_user)
+        form = forms.MessageForm(user=self.user, data=data, initial_user=None,
+                                 conversation=conversation)
+        self.assertTrue(form.errors, msg=(
+            'Conversation should have been blocked'))
+
+        blocked_user.delete()
+        mixer.blend('conversation.BlockedUser',
+                    user=self.user, blocked_by=self.other_user)
+        form = forms.MessageForm(user=self.user, data=data, initial_user=None,
+                                 conversation=conversation)
+        self.assertTrue(form.errors, msg=(
+            'Conversation should have been blocked'))

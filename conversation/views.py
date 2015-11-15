@@ -9,6 +9,7 @@ from django.utils.timezone import now
 from django.views.generic import (
     CreateView,
     DetailView,
+    RedirectView,
     TemplateView,
     UpdateView,
 )
@@ -17,7 +18,7 @@ from django_libs.loaders import load_member
 from django_libs.views_mixins import AjaxResponseMixin
 
 from .forms import MessageForm
-from .models import Conversation
+from .models import BlockedUser, Conversation
 
 
 class ConversationViewMixin(AjaxResponseMixin):
@@ -80,7 +81,7 @@ class ConversationCreateView(ConversationViewMixin, CreateView):
             pk__in=self.initial_user.conversations.values_list('pk'))
         if conversations:
             return HttpResponseRedirect(reverse(
-                'conversation_update', kwargs={'pk': conversations[0]}))
+                'conversation_update', kwargs={'pk': conversations[0].pk}))
         return super(ConversationCreateView, self).dispatch(
             request, *args, **kwargs)
 
@@ -114,3 +115,40 @@ class ConversationArchiveView(DetailView):
             self.object.archived_by.add(request.user)
             return HttpResponseRedirect(reverse('conversation_list'))
         raise Http404
+
+
+class BlockTriggerView(RedirectView):
+    """View to block/unblock a user."""
+    permanent = False
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(BlockTriggerView, self).dispatch(request, *args, **kwargs)
+
+    def get_redirect_url(self, *args, **kwargs):
+        # Check if the user exists
+        try:
+            blocked_user = get_user_model().objects.get(
+                pk=kwargs['user_pk'])
+        except get_user_model().DoesNotExist:
+            return reverse('conversation_list')
+
+        # Block/unblock user
+        blocked, created = BlockedUser.objects.get_or_create(
+            user=blocked_user, blocked_by=self.request.user)
+        if created:
+            # Archive all related conversations
+            for conversation in self.request.user.conversations.filter(
+                    pk__in=blocked_user.conversations.values_list('pk')):
+                conversation.archived_by.add(self.request.user)
+        else:
+            # Unblock user
+            blocked.delete()
+
+        # Check for an existing conversation of these users
+        conversations = self.request.user.conversations.filter(
+            pk__in=blocked_user.conversations.values_list('pk'))
+        if conversations:
+            return reverse('conversation_update', kwargs={
+                'pk': conversations[0].pk})
+        return reverse('conversation_list')

@@ -16,5 +16,10 @@ class MessageAdmin(admin.ModelAdmin):
     list_display = ('user', 'date')
 
 
+class BlockedUserAdmin(admin.ModelAdmin):
+    list_display = ('user', 'blocked_by', 'date')
+
+
+admin.site.register(models.BlockedUser, BlockedUserAdmin)
 admin.site.register(models.Conversation, ConversationAdmin)
 admin.site.register(models.Message, MessageAdmin)

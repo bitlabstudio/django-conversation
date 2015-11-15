@@ -1,24 +1,46 @@
 """Forms for the ``conversation`` app."""
 from django import forms
+from django.db.models import Q
+from django.utils.translation import ugettext_lazy as _
 
-from .models import Conversation, Message
+from .models import BlockedUser, Conversation, Message
 
 
 class MessageForm(forms.ModelForm):
     """Form to post new messages to a new or existing conversation."""
     def __init__(self, user, conversation, initial_user, *args, **kwargs):
         self.user = user
-        self.conversation = conversation
         self.initial_user = initial_user
+        self.conversation = conversation
+        if self.conversation:
+            conversation_users = self.conversation.users.all()
+        else:
+            conversation_users = [self.initial_user]
+        # Check if this conversation has been blocked
+        self.blocked_users = BlockedUser.objects.filter(
+            Q(blocked_by=self.user, user__in=conversation_users) |
+            Q(user=self.user, blocked_by__in=conversation_users),
+        )
         super(MessageForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        if self.blocked_users and self.blocked_users.filter(
+                blocked_by=self.user):
+            raise forms.ValidationError(_(
+                'You have blocked this conversation.'))
+        elif self.blocked_users:
+            raise forms.ValidationError(_('You have been blocked.'))
+        return super(MessageForm, self).clean()
 
     def save(self, *args, **kwargs):
         if not self.instance.pk:
             self.instance.user = self.user
-            if not self.conversation:
-                self.conversation = Conversation.objects.create()
-                self.conversation.users.add(*[self.user, self.initial_user])
-            self.instance.conversation = self.conversation
+            if self.conversation:
+                self.instance.conversation = self.conversation
+            else:
+                self.instance.conversation = Conversation.objects.create()
+                self.instance.conversation.users.add(
+                    *[self.user, self.initial_user])
 
             # Reset archive marks
             self.instance.conversation.archived_by.clear()

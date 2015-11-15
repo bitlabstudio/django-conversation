@@ -2,6 +2,8 @@
 from django.template import Library
 from django.template.defaultfilters import truncatechars
 
+from ..models import BlockedUser
+
 register = Library()
 
 
@@ -13,3 +15,11 @@ def chain_user_names(users, exclude_user, truncate=35):
     return truncatechars(
         ', '.join(u'{}'.format(u) for u in users.exclude(pk=exclude_user.pk)),
         truncate)
+
+
+@register.assignment_tag
+def is_blocked(blocked_by, user):
+    try:
+        return BlockedUser.objects.get(blocked_by=blocked_by, user=user)
+    except BlockedUser.DoesNotExist:
+        return False

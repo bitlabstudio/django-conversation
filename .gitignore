@@ -1,7 +1,9 @@
 *.egg-info/
+*.eggs/
 *.pyc
 *coverage/
 db.sqlite
+build/
 dist/
 .coverage
 *app_media/

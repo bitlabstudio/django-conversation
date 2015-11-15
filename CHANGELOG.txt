@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+- Added option to block users
+
 === 1.3.4 ===
 
 - Added digest management command

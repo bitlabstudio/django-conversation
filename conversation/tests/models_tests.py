@@ -4,6 +4,18 @@ from django.test import TestCase
 from mixer.backend.django import mixer
 
 
+class BlockedUserTestCase(TestCase):
+    """Tests for the ``BlockedUser`` model."""
+    longMessage = True
+
+    def setUp(self):
+        self.blocked = mixer.blend('conversation.BlockedUser')
+
+    def test_model(self):
+        self.assertTrue(str(self.blocked), msg=(
+            'Should be able to instantiate and save the object.'))
+
+
 class ConversationTestCase(TestCase):
     """Tests for the ``Conversation`` model."""
     longMessage = True

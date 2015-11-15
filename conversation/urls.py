@@ -6,6 +6,9 @@ from . import views
 
 urlpatterns = patterns(
     '',
+    url(r'^block/(?P<user_pk>\d+)/$',
+        views.BlockTriggerView.as_view(),
+        name='block_user'),
     url(r'^(?P<pk>\d+)/archive/$',
         views.ConversationArchiveView.as_view(),
         name='conversation_archive'),

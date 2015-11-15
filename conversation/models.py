@@ -103,3 +103,38 @@ class Message(models.Model):
 
     def filename(self):
         return os.path.basename(self.attachment.name)
+
+
+class BlockedUser(models.Model):
+    """
+    Model to mark a user relationship as blocked.
+
+    :user: Blocked user.
+    :blocked_by: User who blocked the other one.
+    :date: Date, the user has been blocked.
+
+    """
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_('Blocked user'),
+        related_name='blocked',
+    )
+
+    blocked_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_('Blocked by'),
+        related_name='blocked_users',
+    )
+
+    date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Date'),
+    )
+
+    class Meta:
+        ordering = ('-date', )
+        verbose_name = _('Blocked user')
+        verbose_name_plural = _('Blocked users')
+
+    def __str__(self):
+        return self.user.email

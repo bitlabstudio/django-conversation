@@ -9,12 +9,24 @@
 {% block content %}
 {% if object.pk %}
     {% chain_user_names object.users.all request.user 200 as user_names %}
-    {% if not request.user in conversation.archived_by.all %}
-        <form class="pull-right" method="post" action="{% url "conversation_archive" pk=conversation.pk %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button>
-        </form>
-    {% endif %}
+    <form class="pull-right" method="post" action="{% url "conversation_archive" pk=conversation.pk %}">
+        {% csrf_token %}
+        <div class="btn-group">
+            <button type="submit" class="btn btn-default" {% if request.user in conversation.archived_by.all %}disabled{% endif %}>{% trans "Archive" %}</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+                {% for user in object.users.all %}
+                    {% if user != request.user %}
+                        {% is_blocked request.user user as user_is_blocked %}
+                        <li><a href="{% url "block_user" user_pk=user.pk %}">{% if user_is_blocked %}{% trans "Unblock" %}{% else %}{% trans "Block" %}{% endif %} {{ user }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </form>
     <h3 style="margin-top: 0px;">{{ user_names }}</h3>
 {% endif %}
 <ul id="conversation-messages" class="list-group">
@@ -30,11 +42,16 @@
         </li>
     {% endfor %}
 </ul>
-<form method="post" action="." enctype="multipart/form-data">
-    {% csrf_token %}
-    {% for field in form %}
-        {% include "django_libs/partials/form_field.html" with hide_label=1 %}
-    {% endfor %}
-    <input type="submit" class="btn btn-primary" value="{% trans "Send" %}" />
-</form>
+{% include "django_libs/partials/form_non_field_errors.html" %}
+{% if form.blocked_users %}
+    <p class="alert alert-danger">{% trans "This conversation has been blocked." %}</p>
+{% else %}
+    <form method="post" action="." enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            {% include "django_libs/partials/form_field.html" with hide_label=1 %}
+        {% endfor %}
+        <input type="submit" class="btn btn-primary" value="{% trans "Send" %}" />
+    </form>
+{% endif %}
 {% endblock %}

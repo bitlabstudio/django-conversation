@@ -91,3 +91,32 @@ class ConversationArchiveViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         self.assertIn(
             self.user, self.conversation.archived_by.all(),
             msg=('The conversation should have been marked as archived.'))
+
+
+class BlockTriggerViewTestCase(ViewRequestFactoryTestMixin, TestCase):
+    """Test case for the BlockTriggerView view."""
+    view_class = views.BlockTriggerView
+
+    def setUp(self):
+        self.user = mixer.blend('auth.User')
+        self.blocked_user = mixer.blend('auth.User')
+
+    def get_view_kwargs(self):
+        return {'user_pk': self.blocked_user.pk}
+
+    def test_view(self):
+        self.should_redirect_to_login_when_anonymous()
+
+        # Invalid
+        self.redirects(user=self.user, to_url_name='conversation_list',
+                       kwargs={'user_pk': 999})
+
+        conversation = mixer.blend('conversation.Conversation')
+        conversation.users.add(self.user, self.blocked_user)
+
+        # Block
+        self.redirects(user=self.user, to_url_name='conversation_update')
+
+        # Unblock
+        conversation.delete()
+        self.redirects(user=self.user, to_url_name='conversation_list')
