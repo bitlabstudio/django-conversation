@@ -1,5 +1,9 @@
 === (ongoing) ===
 
+=== 1.4.1 ===
+
+- Updated requirements
+
 === 1.4 ===
 
 - Django 1.8 and tox optimization

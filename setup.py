@@ -39,7 +39,11 @@ dev_requires = [
     'mixer',
 ]
 
-install_requires = open('requirements.txt').read().splitlines()
+install_requires = [
+    'django<1.9',
+    'django-compat',
+    'django-libs',
+]
 
 
 def read(fname):
