@@ -18,7 +18,11 @@
                 <span class="sr-only">Toggle Dropdown</span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="{% url "conversation_trigger" pk=conversation.pk action='mark-as-unread' %}">{% trans "Mark us unread" %}</a></li>
+                {% if request.user not in conversation.unread_by.all %}
+                    <li data-class="conversation-link-parent">
+                        <a data-class="conversation-link" href="{% url "conversation_trigger" pk=conversation.pk action='mark-as-unread' %}">{% trans "Mark us unread" %}</a>
+                    </li>
+                {% endif %}
                 {% for user in object.users.all %}
                     {% if user != request.user %}
                         {% is_blocked request.user user as user_is_blocked %}

@@ -1,6 +1,7 @@
 === (ongoing) ===
 
 - Django 1.8 and tox optimization
+- Added view to mark a conversation as unread
 
 === 1.3.6 ===
 

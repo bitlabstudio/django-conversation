@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views.generic import (
@@ -107,14 +107,17 @@ class ConversationTriggerView(DetailView):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            self.kwargs = kwargs
-            self.object = self.get_object()
-            if request.user not in self.object.users.all():
-                raise Http404
+        self.kwargs = kwargs
+        self.object = self.get_object()
+        if request.user not in self.object.users.all():
+            raise Http404
+        if kwargs['action'] == 'mark-as-unread':
+            self.object.unread_by.add(request.user)
+        elif kwargs['action'] == 'archive':
             self.object.archived_by.add(request.user)
-            return HttpResponseRedirect(reverse('conversation_list'))
-        raise Http404
+        if request.is_ajax():
+            return HttpResponse('success')
+        return HttpResponseRedirect(reverse('conversation_list'))
 
 
 class BlockTriggerView(RedirectView):

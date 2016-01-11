@@ -34,7 +34,6 @@ import conversation as app
 
 dev_requires = [
     'coverage',
-    'django_nose',
     'fabric',
     'flake8',
     'mixer',

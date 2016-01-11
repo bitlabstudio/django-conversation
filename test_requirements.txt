@@ -1,6 +1,5 @@
 coverage<4.0.0
 django-coverage
-django-nose
 fabric
 flake8
 ipdb

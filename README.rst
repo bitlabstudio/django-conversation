@@ -48,6 +48,13 @@ Don't forget to migrate your database
 Usage
 -----
 
+Please add the following files to your base.html
+
+.. code-block:: html
+
+    <link rel="stylesheet" href="{% static "conversation/css/conversation.css" %}">
+    <script src="{% static "conversation/js/conversation.js" %}"></script>
+
 The conversations in this app are threaded, that means a conversation is
 related to one object. In this case the object is a user. So if ``user1``
 starts a conversation with ``user2`` all messages between those users are

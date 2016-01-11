@@ -83,14 +83,17 @@ class ConversationTriggerViewTestCase(ViewRequestFactoryTestMixin, TestCase):
 
     def test_view(self):
         self.should_redirect_to_login_when_anonymous()
-        self.is_not_callable(user=self.user)
         self.is_not_callable(kwargs={'pk': self.other_conversation.pk},
                              user=self.user, ajax=True, post=True)
-        self.is_postable(user=self.user, ajax=True,
-                         to_url_name='conversation_list')
+        self.is_postable(user=self.user, to_url_name='conversation_list')
         self.assertIn(
             self.user, self.conversation.archived_by.all(),
             msg=('The conversation should have been marked as archived.'))
+        self.is_callable(user=self.user, ajax=True, kwargs={
+            'pk': self.conversation.pk, 'action': 'mark-as-unread'})
+        self.assertIn(
+            self.user, self.conversation.unread_by.all(),
+            msg=('The conversation should have been marked as unread.'))
 
 
 class BlockTriggerViewTestCase(ViewRequestFactoryTestMixin, TestCase):
