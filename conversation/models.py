@@ -5,7 +5,10 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
+from compat import python_2_unicode_compatible
 
+
+@python_2_unicode_compatible
 class Conversation(models.Model):
     """
     Model to contain different messages between one or more users.
@@ -45,6 +48,9 @@ class Conversation(models.Model):
         verbose_name = _('Conversation')
         verbose_name_plural = _('Conversations')
 
+    def __unicode__(self):  # pragma: nocover
+        return self.__str__()
+
     def __str__(self):
         return '{}'.format(self.pk)
 
@@ -55,6 +61,7 @@ class Conversation(models.Model):
             return None
 
 
+@python_2_unicode_compatible
 class Message(models.Model):
     """
     Model, which holds information about a post within one conversation.
@@ -98,13 +105,19 @@ class Message(models.Model):
         verbose_name = _('Message')
         verbose_name_plural = _('Messages')
 
+    def __unicode__(self):  # pragma: nocover
+        return self.__str__()
+
     def __str__(self):
         return self.user.email
 
     def filename(self):
-        return os.path.basename(self.attachment.name)
+        if self.attachment:  # pragma: nocover
+            return os.path.basename(self.attachment.name)
+        return ''
 
 
+@python_2_unicode_compatible
 class BlockedUser(models.Model):
     """
     Model to mark a user relationship as blocked.
@@ -135,6 +148,9 @@ class BlockedUser(models.Model):
         ordering = ('-date', )
         verbose_name = _('Blocked user')
         verbose_name_plural = _('Blocked users')
+
+    def __unicode__(self):  # pragma: nocover
+        return self.__str__()
 
     def __str__(self):
         return self.user.email

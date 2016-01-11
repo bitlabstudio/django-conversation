@@ -32,6 +32,17 @@ from setuptools import setup, find_packages
 import conversation as app
 
 
+dev_requires = [
+    'coverage',
+    'django_nose',
+    'fabric',
+    'flake8',
+    'mixer',
+]
+
+install_requires = open('requirements.txt').read().splitlines()
+
+
 def read(fname):
     try:
         return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -51,21 +62,8 @@ setup(
     url="https://github.com/bitmazk/django-conversation",
     packages=find_packages(),
     include_package_data=True,
-    install_requires=[
-        'Django<=1.7.8',
-        'django-libs',
-    ],
-    tests_require=[
-        'django-nose',
-        'coverage<=3.7.1',
-        'django-coverage',
-        'ipdb',
-        'flake8',
-        'fabric',
-        'mixer',
-        'mock',
-        'Pillow',
-        'django-libs',
-    ],
-    test_suite='conversation.tests.runtests.runtests',
+    install_requires=install_requires,
+    extras_require={
+        'dev': dev_requires,
+    },
 )

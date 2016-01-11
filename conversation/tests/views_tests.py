@@ -68,9 +68,9 @@ class ConversationUpdateViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         self.is_callable(user=self.user, ajax=True)
 
 
-class ConversationArchiveViewTestCase(ViewRequestFactoryTestMixin, TestCase):
-    """Test case for the ConversationArchiveView view."""
-    view_class = views.ConversationArchiveView
+class ConversationTriggerViewTestCase(ViewRequestFactoryTestMixin, TestCase):
+    """Test case for the ConversationTriggerView view."""
+    view_class = views.ConversationTriggerView
 
     def setUp(self):
         self.user = mixer.blend('auth.User')
@@ -79,7 +79,7 @@ class ConversationArchiveViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         self.other_conversation = mixer.blend('conversation.Conversation')
 
     def get_view_kwargs(self):
-        return {'pk': self.conversation.pk}
+        return {'pk': self.conversation.pk, 'action': 'archive'}
 
     def test_view(self):
         self.should_redirect_to_login_when_anonymous()

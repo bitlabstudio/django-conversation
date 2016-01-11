@@ -3,7 +3,7 @@ from django import forms
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
-from .models import BlockedUser, Conversation, Message
+from . import models
 
 
 class MessageForm(forms.ModelForm):
@@ -17,7 +17,7 @@ class MessageForm(forms.ModelForm):
         else:
             conversation_users = [self.initial_user]
         # Check if this conversation has been blocked
-        self.blocked_users = BlockedUser.objects.filter(
+        self.blocked_users = models.BlockedUser.objects.filter(
             Q(blocked_by=self.user, user__in=conversation_users) |
             Q(user=self.user, blocked_by__in=conversation_users),
         )
@@ -38,7 +38,8 @@ class MessageForm(forms.ModelForm):
             if self.conversation:
                 self.instance.conversation = self.conversation
             else:
-                self.instance.conversation = Conversation.objects.create()
+                self.instance.conversation = \
+                    models.Conversation.objects.create()
                 self.instance.conversation.users.add(
                     *[self.user, self.initial_user])
 
@@ -50,5 +51,5 @@ class MessageForm(forms.ModelForm):
         return super(MessageForm, self).save(*args, **kwargs).conversation
 
     class Meta:
-        model = Message
+        model = models.Message
         fields = ('text', 'attachment')

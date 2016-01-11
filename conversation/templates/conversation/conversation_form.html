@@ -9,7 +9,7 @@
 {% block content %}
 {% if object.pk %}
     {% chain_user_names object.users.all request.user 200 as user_names %}
-    <form class="pull-right" method="post" action="{% url "conversation_archive" pk=conversation.pk %}">
+    <form class="pull-right" method="post" action="{% url "conversation_trigger" pk=conversation.pk action='archive' %}">
         {% csrf_token %}
         <div class="btn-group">
             <button type="submit" class="btn btn-default" {% if request.user in conversation.archived_by.all %}disabled{% endif %}>{% trans "Archive" %}</button>
@@ -18,10 +18,11 @@
                 <span class="sr-only">Toggle Dropdown</span>
             </button>
             <ul class="dropdown-menu">
+                <li><a href="{% url "conversation_trigger" pk=conversation.pk action='mark-as-unread' %}">{% trans "Mark us unread" %}</a></li>
                 {% for user in object.users.all %}
                     {% if user != request.user %}
                         {% is_blocked request.user user as user_is_blocked %}
-                        <li><a href="{% url "block_user" user_pk=user.pk %}">{% if user_is_blocked %}{% trans "Unblock" %}{% else %}{% trans "Block" %}{% endif %} {{ user }}</a></li>
+                        <li><a href="{% url "conversation_block_user" user_pk=user.pk %}">{% if user_is_blocked %}{% trans "Unblock" %}{% else %}{% trans "Block" %}{% endif %} {{ user }}</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>

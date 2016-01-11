@@ -101,7 +101,7 @@ class ConversationListView(TemplateView):
             request, *args, **kwargs)
 
 
-class ConversationArchiveView(DetailView):
+class ConversationTriggerView(DetailView):
     """View to archive a conversation."""
     model = Conversation
 

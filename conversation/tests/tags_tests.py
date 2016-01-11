@@ -29,6 +29,7 @@ class IsBlockedTestCase(TestCase):
     longMessage = True
 
     def test_tag(self):
+        self.assertFalse(conversation_tags.is_blocked('foo', 'bar'))
         user1 = mixer.blend('auth.User')
         user2 = mixer.blend('auth.User')
         self.assertFalse(conversation_tags.is_blocked(user1, user2))
