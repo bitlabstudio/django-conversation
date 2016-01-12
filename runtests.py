@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 """
-This script is a trick to setup a fake Django environment, since this reusable
-app will be developed and tested outside any specific Django project.
-Via ``settings.configure`` you will be able to set all necessary settings
-for your app and run the tests as if you were calling ``./manage.py test``.
+This script is used to run tests, create a coverage report and output the
+statistics at the end of the tox run.
+
+To run this script just execute ``tox``
+
 """
 import re
 
