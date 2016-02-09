@@ -15,7 +15,9 @@ class Conversation(models.Model):
 
     :users: Users participating in this conversation.
     :archived_by: List of participants, who archived this conversation.
+    :notified: List of participants, who have received an email notification.
     :unread_by: List of participants, who haven't read this conversation.
+    :read_by_all: Date all participants have marked this conversation as read.
 
     """
     users = models.ManyToManyField(
@@ -28,6 +30,13 @@ class Conversation(models.Model):
         settings.AUTH_USER_MODEL,
         verbose_name=_('Archived by'),
         related_name='archived_conversations',
+        blank=True, null=True,
+    )
+
+    notified = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        verbose_name=_('Notified'),
+        related_name='notified_conversations',
         blank=True, null=True,
     )
 

@@ -48,6 +48,8 @@ class MessageForm(forms.ModelForm):
             # Mark as unread
             self.instance.conversation.unread_by.add(
                 *self.instance.conversation.users.exclude(pk=self.user.pk))
+            # Clear notification note
+            self.instance.conversation.notified.clear()
         return super(MessageForm, self).save(*args, **kwargs).conversation
 
     class Meta:

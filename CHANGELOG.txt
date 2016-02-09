@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+- Users will only notified once
+
 === 1.4.1 ===
 
 - Updated requirements
