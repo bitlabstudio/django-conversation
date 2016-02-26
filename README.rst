@@ -27,6 +27,7 @@ Add ``conversation`` to your ``INSTALLED_APPS``
     INSTALLED_APPS = (
         ...,
         'conversation',
+        'django_libs',
     )
 
 Add the ``conversation`` URLs to your ``urls.py``
