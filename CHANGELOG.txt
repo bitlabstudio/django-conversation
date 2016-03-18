@@ -1,11 +1,9 @@
 === (ongoing) ===
 
-=== 1.4.2 ===
+=== 1.4.X ===
 
+- Enhanced message admin
 - Users will only notified once
-
-=== 1.4.1 ===
-
 - Updated requirements
 
 === 1.4 ===
