@@ -14,7 +14,7 @@ class ConversationAdmin(admin.ModelAdmin):
 
 class MessageAdmin(admin.ModelAdmin):
     list_display = ('user', 'date', 'text')
-    search_fields = ('user', 'text')
+    search_fields = ('text', )
 
 
 class BlockedUserAdmin(admin.ModelAdmin):
