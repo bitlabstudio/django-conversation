@@ -13,7 +13,8 @@ class ConversationAdmin(admin.ModelAdmin):
 
 
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date')
+    list_display = ('user', 'date', 'text')
+    search_fields = ('user', 'text')
 
 
 class BlockedUserAdmin(admin.ModelAdmin):
