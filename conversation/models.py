@@ -30,18 +30,21 @@ class Conversation(models.Model):
         settings.AUTH_USER_MODEL,
         verbose_name=_('Archived by'),
         related_name='archived_conversations',
+        blank=True,
     )
 
     notified = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         verbose_name=_('Notified'),
         related_name='notified_conversations',
+        blank=True,
     )
 
     unread_by = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         verbose_name=_('Unread by'),
         related_name='unread_conversations',
+        blank=True,
     )
 
     read_by_all = models.DateTimeField(
