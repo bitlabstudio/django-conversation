@@ -5,6 +5,7 @@
 - Enhanced message admin
 - Users will only notified once
 - Updated requirements
+- Removed null argument from many-to-many relationships
 
 === 1.4 ===
 
