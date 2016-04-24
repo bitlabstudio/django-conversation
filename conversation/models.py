@@ -3,9 +3,8 @@ import os
 
 from django.db import models
 from django.conf import settings
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-
-from compat import python_2_unicode_compatible
 
 
 @python_2_unicode_compatible
@@ -56,9 +55,6 @@ class Conversation(models.Model):
         ordering = ('-pk', )
         verbose_name = _('Conversation')
         verbose_name_plural = _('Conversations')
-
-    def __unicode__(self):  # pragma: nocover
-        return self.__str__()
 
     def __str__(self):
         return '{}'.format(self.pk)
@@ -114,9 +110,6 @@ class Message(models.Model):
         verbose_name = _('Message')
         verbose_name_plural = _('Messages')
 
-    def __unicode__(self):  # pragma: nocover
-        return self.__str__()
-
     def __str__(self):
         return self.user.email
 
@@ -157,9 +150,6 @@ class BlockedUser(models.Model):
         ordering = ('-date', )
         verbose_name = _('Blocked user')
         verbose_name_plural = _('Blocked users')
-
-    def __unicode__(self):  # pragma: nocover
-        return self.__str__()
 
     def __str__(self):
         return self.user.email

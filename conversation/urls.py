@@ -1,11 +1,10 @@
 """URLs for the ``conversation`` app."""
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from . import views
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^block/(?P<user_pk>\d+)/$',
         views.BlockTriggerView.as_view(),
         name='conversation_block_user'),
@@ -21,4 +20,4 @@ urlpatterns = patterns(
     url(r'^',
         views.ConversationListView.as_view(),
         name='conversation_list'),
-)
+]

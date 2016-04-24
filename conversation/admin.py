@@ -1,7 +1,7 @@
 """Admin registration for the ``conversation`` app."""
 from django.contrib import admin
 
-import models
+from . import models
 
 
 class ConversationAdmin(admin.ModelAdmin):

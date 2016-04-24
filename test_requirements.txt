@@ -1,10 +1,8 @@
-coverage<4.0.0
+coverage
 django-coverage
-fabric
+fabric3
 flake8
 ipdb
 mixer
 mock
 tox
-django-compat
-six

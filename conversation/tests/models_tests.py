@@ -12,7 +12,7 @@ class BlockedUserTestCase(TestCase):
         self.blocked = mixer.blend('conversation.BlockedUser')
 
     def test_model(self):
-        self.assertTrue(self.blocked.__unicode__(), msg=(
+        self.assertTrue(str(self.blocked), msg=(
             'Should be able to instantiate and save the object.'))
 
 
@@ -24,7 +24,7 @@ class ConversationTestCase(TestCase):
         self.conversation = mixer.blend('conversation.Conversation')
 
     def test_model(self):
-        self.assertTrue(self.conversation.__unicode__(), msg=(
+        self.assertTrue(str(self.conversation), msg=(
             'Should be able to instantiate and save the object.'))
 
 
@@ -36,7 +36,7 @@ class MessageTestCase(TestCase):
         self.message = mixer.blend('conversation.Message')
 
     def test_model(self):
-        self.assertTrue(self.message.__unicode__(), msg=(
+        self.assertTrue(str(self.message), msg=(
             'Should be able to instantiate and save the object.'))
 
     def test_filename(self):
