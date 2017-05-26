@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import NoArgsCommand
 from django.utils.timezone import now, timedelta
 
-from django_libs.utils_email import send_email
+from django_libs.utils.email import send_email
 
 from ...models import Conversation
 

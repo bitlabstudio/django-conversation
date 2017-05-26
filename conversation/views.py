@@ -1,4 +1,6 @@
 """Views for the ``conversation`` app."""
+import collections
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
@@ -41,6 +43,23 @@ class ConversationViewMixin(AjaxResponseMixin):
                 self, 'initial_user') else None,
         })
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ConversationViewMixin, self).get_context_data(**kwargs)
+        conversations = {}
+        for conversation in self.request.user.conversations.prefetch_related(
+                'messages'):
+            try:
+                latest_message = conversation.messages.first().date.strftime(
+                    '%Y-%m-%d')
+            except AttributeError:
+                latest_message = '0'
+            conversations[latest_message] = conversation
+        ctx.update({
+            'conversations': collections.OrderedDict(
+                reversed(sorted(conversations.items()))),
+        })
+        return ctx
 
     def get_success_url(self):
         return reverse('conversation_update', kwargs={'pk': self.object.pk})

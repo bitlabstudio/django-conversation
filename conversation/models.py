@@ -106,7 +106,7 @@ class Message(models.Model):
     )
 
     class Meta:
-        ordering = ('date', )
+        ordering = ('-date', )
         verbose_name = _('Message')
         verbose_name_plural = _('Messages')
 
