@@ -47,14 +47,16 @@ class ConversationViewMixin(AjaxResponseMixin):
     def get_context_data(self, **kwargs):
         ctx = super(ConversationViewMixin, self).get_context_data(**kwargs)
         conversations = {}
-        for conversation in self.request.user.conversations.prefetch_related(
-                'messages'):
+        for conversation in Conversation.objects.filter(
+                users__in=[self.request.user]).exclude(
+                archived_by__in=[self.request.user]):
             try:
-                latest_message = conversation.messages.first().date.strftime(
-                    '%Y-%m-%d')
+                latest_message = conversation.messages.exclude(
+                    user=self.request.user).first().date.strftime('%Y-%m-%d')
+                conversations['{}-{}'.format(
+                    latest_message, conversation.pk)] = conversation
             except AttributeError:
-                latest_message = '0'
-            conversations[latest_message] = conversation
+                continue
         ctx.update({
             'conversations': collections.OrderedDict(
                 reversed(sorted(conversations.items()))),

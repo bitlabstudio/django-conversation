@@ -2,6 +2,7 @@
 
 === 1.4.X ===
 
+- Fixed conversation list on view contexts
 - List conversation by latest messages
 - Prepared app for Django 1.9 and Python 3.5
 - Enhanced message admin
