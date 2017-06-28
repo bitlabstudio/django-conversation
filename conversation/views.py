@@ -51,8 +51,8 @@ class ConversationViewMixin(AjaxResponseMixin):
                 users__in=[self.request.user]).exclude(
                 archived_by__in=[self.request.user]):
             try:
-                latest_message = conversation.messages.exclude(
-                    user=self.request.user).first().date.strftime('%Y-%m-%d')
+                latest_message = conversation.messages.first().date.strftime(
+                    '%Y-%m-%d')
                 conversations['{}-{}'.format(
                     latest_message, conversation.pk)] = conversation
             except AttributeError:
