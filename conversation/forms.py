@@ -1,10 +1,7 @@
 """Forms for the ``conversation`` app."""
 from django import forms
-from django.conf import settings
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-
-from django_libs.utils.email import send_email
 
 from . import models
 
@@ -54,28 +51,6 @@ class MessageForm(forms.ModelForm):
 
             # Clear notification note
             self.instance.conversation.notified.clear()
-
-            # Send instant notifications
-            if (not hasattr(settings, 'CONVERSATION_ENABLE_NOTIFICATIONS') or
-                    settings.CONVERSATION_ENABLE_NOTIFICATIONS):
-                for user in self.instance.conversation.users.exclude(
-                        pk=self.user.pk):
-                    if (hasattr(user, 'disable_conversation_notifications') and
-                            user.disable_conversation_notifications):
-                        continue
-                    send_email(
-                        None,
-                        {
-                            'user': user,
-                            'conversations': [self.instance.conversation],
-                        },
-                        'conversation/email/message_digest_subject.html',
-                        'conversation/email/message_digest_body.html',
-                        settings.FROM_EMAIL,
-                        recipients=[user.email, ],
-                        priority='medium',
-                    )
-                    self.instance.conversation.notified.add(user)
 
         return super(MessageForm, self).save(*args, **kwargs).conversation
 

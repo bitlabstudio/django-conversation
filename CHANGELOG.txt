@@ -1,6 +1,7 @@
 === (ongoing) ===
 
 - Added instant notifications
+- Added template tage to get last message
 
 === 1.4.X ===
 

@@ -17,6 +17,7 @@ from django.views.generic import (
 )
 
 from django_libs.loaders import load_member
+from django_libs.utils.email import send_email
 from django_libs.views_mixins import AjaxResponseMixin
 
 from .forms import MessageForm
@@ -64,6 +65,26 @@ class ConversationViewMixin(AjaxResponseMixin):
         return ctx
 
     def get_success_url(self):
+        # Send instant notifications
+        if (not hasattr(settings, 'CONVERSATION_ENABLE_NOTIFICATIONS') or
+                settings.CONVERSATION_ENABLE_NOTIFICATIONS):
+            for user in self.object.users.exclude(pk=self.user.pk):
+                if (hasattr(user, 'disable_conversation_notifications') and
+                        user.disable_conversation_notifications):
+                    continue
+                send_email(
+                    None,
+                    {
+                        'user': user,
+                        'conversations': [self.object],
+                    },
+                    'conversation/email/message_digest_subject.html',
+                    'conversation/email/message_digest_body.html',
+                    settings.FROM_EMAIL,
+                    recipients=[user.email, ],
+                    priority='medium',
+                )
+                self.object.notified.add(user)
         return reverse('conversation_update', kwargs={'pk': self.object.pk})
 
 
