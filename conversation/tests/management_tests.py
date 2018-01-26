@@ -24,3 +24,8 @@ class SendMessageDigestTestCase(TestCase):
         call_command('send_message_digest')
         self.assertEqual(len(mail.outbox), 1, msg=(
             'One digest should have been sent.'))
+
+        with self.settings(CONVERSATION_ENABLE_DIGEST=False):
+            call_command('send_message_digest')
+            self.assertEqual(len(mail.outbox), 1, msg=(
+                'No new digest should have been sent.'))

@@ -1,4 +1,5 @@
 """Tests for the forms of the ``conversation`` app."""
+from django.core import mail
 from django.test import TestCase
 
 from mixer.backend.django import mixer
@@ -26,9 +27,16 @@ class MessageFormTestCase(TestCase):
             'A new conversation should\'ve been started with the message.'))
         form = forms.MessageForm(user=self.user, data=data, initial_user=None,
                                  conversation=conversation)
+
+        self.assertEqual(len(mail.outbox), 1, msg=(
+            'One notification should have been sent.'))
+
         form.save()
         self.assertEqual(Conversation.objects.count(), 1, msg=(
             'The existing conversation should\'ve been re-used.'))
+
+        self.assertEqual(len(mail.outbox), 2, msg=(
+            'One notification should have been sent.'))
 
         blocked_user = mixer.blend('conversation.BlockedUser',
                                    blocked_by=self.user, user=self.other_user)

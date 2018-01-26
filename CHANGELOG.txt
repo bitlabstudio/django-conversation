@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+- Added instant notifications
+
 === 1.4.X ===
 
 - Fixed conversation list on view contexts

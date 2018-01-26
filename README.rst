@@ -84,10 +84,48 @@ CONVERSATION_MESSAGE_FORM
 
 Default: None
 
-If you want to use your own message form, you can define it here::
+If you want to use your own message form, you can define it here.
+
+.. code-block:: python
 
     CONVERSATION_MESSAGE_FORM = 'my_app.forms.MyMessageForm'
 
+
+CONVERSATION_ENABLE_DIGEST
+++++++++++++++++++++++++++
+
+Default: True
+
+You can enable digests of unread messages by running
+`./manage.py send_message_digest`.
+
+If you want to disable the digest you can set the setting to `False`.
+
+.. code-block:: python
+
+    CONVERSATION_ENABLE_DIGEST = False
+
+
+CONVERSATION_ENABLE_NOTIFICATIONS
++++++++++++++++++++++++++++++++++
+
+Default: True
+
+You can enable instant email notification, which are sent each time a new
+message has arrived.
+
+If you want to disable notifications you can set the setting to `False`.
+
+.. code-block:: python
+
+    CONVERSATION_ENABLE_NOTIFICATIONS = False
+
+
+User specific notification settings
++++++++++++++++++++++++++++++++++++
+
+You can also disable notifications for single users by adding an attribute to
+your user model. Name it `disable_conversation_notifications`.
 
 
 Contribute

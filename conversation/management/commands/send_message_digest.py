@@ -13,31 +13,41 @@ class Command(NoArgsCommand):
     help = "Send message digests."
 
     def handle_noargs(self, **options):
-        # Get unread conversations, which hasn't been read for one day
-        unread_conversations = Conversation.objects.filter(
-            unread_by__isnull=False,
-            read_by_all__lt=now() - timedelta(days=1))
-        users = get_user_model().objects.filter(
-            pk__in=unread_conversations.values_list('unread_by')).distinct()
-        count = 0
-        for user in users:
-            unread = unread_conversations.filter(unread_by__in=[user]).exclude(
-                notified__in=[user])
-            if unread:
-                count += 1
-                send_email(
-                    None,
-                    {
-                        'user': user,
-                        'conversations': unread,
-                    },
-                    'conversation/email/message_digest_subject.html',
-                    'conversation/email/message_digest_body.html',
-                    settings.FROM_EMAIL,
-                    recipients=[user.email, ],
-                    priority='medium',
-                )
-                for conversation in unread:
-                    conversation.notified.add(user)
+        if (not hasattr(settings, 'CONVERSATION_ENABLE_DIGEST') or
+                settings.CONVERSATION_ENABLE_DIGEST):
+            # Get unread conversations, which hasn't been read for one day
+            unread_conversations = Conversation.objects.filter(
+                unread_by__isnull=False,
+                read_by_all__lt=now() - timedelta(days=1))
+            users = get_user_model().objects.filter(
+                pk__in=unread_conversations.values_list(
+                    'unread_by')).distinct()
+            count = 0
+            for user in users:
+                if (hasattr(user, 'disable_conversation_notifications') and
+                        user.disable_conversation_notifications):
+                    continue
 
-        print('Sent {0} digest(s).'.format(count))
+                unread = unread_conversations.filter(
+                    unread_by__in=[user]).exclude(notified__in=[user])
+                if unread:
+                    count += 1
+                    send_email(
+                        None,
+                        {
+                            'user': user,
+                            'conversations': unread,
+                            'digest': True,
+                        },
+                        'conversation/email/message_digest_subject.html',
+                        'conversation/email/message_digest_body.html',
+                        settings.FROM_EMAIL,
+                        recipients=[user.email, ],
+                        priority='medium',
+                    )
+                    for conversation in unread:
+                        conversation.notified.add(user)
+
+            print('Sent {0} digest(s).'.format(count))
+        else:
+            print('Digest disabled.')
