@@ -59,12 +59,6 @@ class Conversation(models.Model):
     def __str__(self):
         return '{}'.format(self.pk)
 
-    def get_last_message(self):
-        try:
-            return self.messages.order_by('-date')[0]
-        except IndexError:
-            return None
-
 
 @python_2_unicode_compatible
 class Message(models.Model):

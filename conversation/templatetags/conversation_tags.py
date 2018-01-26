@@ -27,3 +27,11 @@ def is_blocked(blocked_by, user):
         return BlockedUser.objects.get(blocked_by=blocked_by, user=user)
     except BlockedUser.DoesNotExist:
         return False
+
+
+@register.assignment_tag
+def get_last_message(conversation):
+    try:
+        return conversation.messages.order_by('-date')[0]
+    except IndexError:
+        return None
