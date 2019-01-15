@@ -1,7 +1,8 @@
 === (ongoing) ===
 
 - Added instant notifications
-- Added template tage to get last message
+- Added template tag to get last message
+- Increased message char length to 4096
 
 === 1.4.X ===
 

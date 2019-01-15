@@ -89,7 +89,7 @@ class Message(models.Model):
     )
 
     text = models.TextField(
-        max_length=2048,
+        max_length=4096,
         verbose_name=_('Text'),
     )
 
